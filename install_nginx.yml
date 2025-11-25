@@ -21,3 +21,9 @@
         name: nginx
         state: started
         enabled: yes
+
+     - name: Stop Nginx service
+      service:
+        name: nginx
+        state: stoped
+        enabled: yes
