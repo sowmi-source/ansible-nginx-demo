@@ -1,6 +1,6 @@
 ---
 - name: Install and start Nginx
-  hosts: webserver
+  hosts: web
   become: yes
 
   tasks:
