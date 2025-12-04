@@ -37,3 +37,8 @@
         dest: /home/dinesh12/Videos/
         remote_src: yes
       loop: "{{ jar_files.files }}"
+
+
+
+
+*main.yml(~/ansible-nginx-demo/roles/ansible_rike/tasks)
