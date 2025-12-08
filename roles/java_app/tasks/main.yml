@@ -1,5 +1,3 @@
-
-# tasks file for roles/java_app
 - name: Ensure Java is installed
   apt:
     name: openjdk-17-jdk
@@ -24,10 +22,15 @@
     path: "{{ jar_destination }}"
     state: directory
 
+- name: Find all JAR files in target folder
+  find:
+    paths: "{{ java_project_path }}/target"
+    patterns: "*.jar"
+  register: jar_files
+
 - name: Copy built JAR files to destination folder
   copy:
-    src: "{{ item }}"
+    src: "{{ item.path }}"
     dest: "{{ jar_destination }}/"
     remote_src: yes
-  with_fileglob:
-    - "{{ java_project_path }}/target/*.jar"
+  loop: "{{ jar_files.files }}"
