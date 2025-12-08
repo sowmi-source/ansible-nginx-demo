@@ -1,0 +1,6 @@
+- name: Build Java App using Role
+  hosts: all
+  become: yes
+
+  roles:
+    - java_app

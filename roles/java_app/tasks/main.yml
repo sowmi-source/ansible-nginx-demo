@@ -1,0 +1,33 @@
+
+# tasks file for roles/java_app
+- name: Ensure Java is installed
+  apt:
+    name: openjdk-17-jdk
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Ensure Maven is installed
+  apt:
+    name: maven
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Build Java application using Maven
+  command: mvn clean install
+  args:
+    chdir: "{{ java_project_path }}"
+
+- name: Create destination folder if not exists
+  file:
+    path: "{{ jar_destination }}"
+    state: directory
+
+- name: Copy built JAR files to destination folder
+  copy:
+    src: "{{ item }}"
+    dest: "{{ jar_destination }}/"
+    remote_src: yes
+  with_fileglob:
+    - "{{ java_project_path }}/target/*.jar"
