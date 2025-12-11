@@ -1,2 +1,51 @@
----
+
+# ------------------------
+# Install Nginx
+# ------------------------
+- name: Install Nginx (Debian)
+  apt:
+    name: nginx
+    state: latest
+  when: ansible_os_family == "Debian"
+  notify: restart nginx
+  tags: install
+
+- name: Install Nginx (RHEL)
+  yum:
+    name: nginx
+    state: latest
+  when: ansible_os_family == "RedHat"
+  notify: restart nginx
+  tags: install
+
+# ------------------------
+# Start Nginx
+# ------------------------
+- name: Start Nginx service
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+  tags: start
+  notify: restart nginx
+
+# ------------------------
+# Stop Nginx
+# ------------------------
+- name: Stop Nginx service
+  service:
+    name: nginx
+    state: stopped
+  tags: stop
+
+# ------------------------
+# Force restart handler (optional)
+# ------------------------
+- name: Force handler trigger
+  file:
+    path: /tmp/restart_trigger
+    state: touch
+  notify: restart nginx
+  tags: restart
+
 # tasks file for roles/webserver
