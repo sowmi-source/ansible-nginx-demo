@@ -1,6 +1,7 @@
-- name: Force restart nginx
-  file:
-    path: /tmp/restart_trigger
-    state: touch
-  notify: restart nginx
-  tags: restart
+---
+- name: Manage Nginx using webserver role
+  hosts: webserver
+  become: yes
+
+  roles:
+    - role: webserver
