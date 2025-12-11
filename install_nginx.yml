@@ -1,4 +1,3 @@
----
 - name: Install and manage Nginx
   hosts: webserver
   become: yes
@@ -12,28 +11,12 @@
       notify: restart nginx
       tags: install
 
-    - name: Install Nginx (RHEL/Amazon Linux)
-      yum:
-        name: nginx
-        state: present
-      when: ansible_os_family == "RedHat"
-      notify: restart nginx
-      tags: install
-
     - name: Start Nginx service
       service:
         name: nginx
         state: started
         enabled: yes
-      notify: restart nginx
       tags: start
-
-    - name: Trigger handler using file
-      file:
-        path: /tmp/trigger.txt
-        state: touch
-      notify: restart nginx
-      tags: restart
 
   handlers:
     - name: restart nginx
