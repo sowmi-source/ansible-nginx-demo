@@ -1,5 +1,5 @@
 
-- name: Demo: Handlers and Tags
+- name: Handlers and Tags
   hosts: all
   become: true
 
