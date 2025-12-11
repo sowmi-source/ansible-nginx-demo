@@ -32,5 +32,6 @@
     - name: stop nginx
       service:
         name: nginx
-        state: stoped
-      tags: stop
+        state: stopped
+      tags:
+        - stop
