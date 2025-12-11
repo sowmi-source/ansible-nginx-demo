@@ -1,6 +1,5 @@
-
 ---
-- name: Install and start Nginx
+- name: Install and manage Nginx
   hosts: webserver
   become: yes
 
@@ -26,12 +25,18 @@
         name: nginx
         state: started
         enabled: yes
+      notify: restart nginx
       tags: start
 
+    - name: Trigger handler using file
+      file:
+        path: /tmp/trigger.txt
+        state: touch
+      notify: restart nginx
+      tags: restart
+
   handlers:
-    - name: stop nginx
+    - name: restart nginx
       service:
         name: nginx
-        state: stopped
-      tags:
-        - stop
+        state: restarted
