@@ -1,23 +1,42 @@
 ---
-- name: Install and start Nginx
+- name: Install and manage Nginx
   hosts: webserver
   become: yes
 
   tasks:
-    - name: Install Nginx (Ubuntu/Debian)
+    - name: Install Nginx (Debian)
       apt:
         name: nginx
         state: present
       when: ansible_os_family == "Debian"
+      notify: restart nginx
+      tags: install
 
-    - name: Install Nginx (RHEL/Amazon Linux)
+    - name: Install Nginx (RHEL)
       yum:
         name: nginx
         state: present
       when: ansible_os_family == "RedHat"
+      notify: restart nginx
+      tags: install
 
-    - name: Start Nginx service
+    - name: Start Nginx
       service:
         name: nginx
         state: started
         enabled: yes
+      notify: restart nginx
+      tags: start
+
+    - name: Force handler trigger (optional)
+      file:
+        path: /tmp/restart_trigger
+        state: touch
+      notify: restart nginx
+      tags: restart
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
