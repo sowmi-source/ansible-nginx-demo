@@ -1,0 +1,6 @@
+- name: Force restart nginx
+  file:
+    path: /tmp/restart_trigger
+    state: touch
+  notify: restart nginx
+  tags: restart
