@@ -1,22 +1,33 @@
-
-- name: Handlers and Tags
-  hosts: all
-  become: true
+---
+- name: Install and start Nginx
+  hosts: webserver
+  become: yes
 
   tasks:
-    - name: Install nginx
+    - name: Install Nginx (Ubuntu/Debian)
       apt:
         name: nginx
         state: present
+      when: ansible_os_family == "Debian"
       notify: restart nginx
       tags: install
 
-    - name: Ensure nginx is running
+    - name: Install Nginx (RHEL/Amazon Linux)
+      yum:
+        name: nginx
+        state: present
+      when: ansible_os_family == "RedHat"
+      notify: restart nginx
+      tags: install
+
+    - name: Start Nginx service
       service:
         name: nginx
         state: started
+        enabled: yes
       tags: start
 
+ 
     - name: Stop nginx service
       service:
         name: nginx
@@ -28,4 +39,3 @@
       service:
         name: nginx
         state: restarted
-
