@@ -29,8 +29,8 @@
       tags: start
 
   handlers:
-    - name: restart nginx
+    - name: stop nginx
       service:
         name: nginx
-        state: restarted
-      tags: restart
+        state: stoped
+      tags: stop
