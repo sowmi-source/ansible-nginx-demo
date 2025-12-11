@@ -1,4 +1,5 @@
-- name: Install and manage Nginx
+---
+- name: Install and start Nginx
   hosts: webserver
   become: yes
 
@@ -8,18 +9,15 @@
         name: nginx
         state: present
       when: ansible_os_family == "Debian"
-      notify: restart nginx
-      tags: install
+
+    - name: Install Nginx (RHEL/Amazon Linux)
+      yum:
+        name: nginx
+        state: present
+      when: ansible_os_family == "RedHat"
 
     - name: Start Nginx service
       service:
         name: nginx
         state: started
         enabled: yes
-      tags: start
-
-  handlers:
-    - name: restart nginx
-      service:
-        name: nginx
-        state: restarted
