@@ -1,0 +1,16 @@
+- name: Ensure deployment directory exists
+  file:
+    path: /opt/deployment
+    state: directory
+    mode: '0755'
+
+- name: Clone Repo-B (source project)
+  git:
+    repo: "https://{{ git_username }}:{{ git_token }}@github.com/sowmi-source/Newfile.git"
+    dest: /opt/deployment
+    version: main
+    force: yes
+
+- name: Verify project files
+  command: ls -l /opt/deployment
+
