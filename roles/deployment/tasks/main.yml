@@ -1,5 +1,4 @@
-
-- name: Ensure local clone directories exist
+- name: Ensure temporary clone directories exist
   file:
     path: "{{ item }}"
     state: directory
@@ -8,25 +7,27 @@
     - "{{ local_source_clone }}"
     - "{{ local_dest_clone }}"
 
-- name: Clone source repo
-  git:
-    repo: "{{ source_git_repo }}"
-    dest: "{{ local_source_clone }}"
-    version: main
-    force: yes
+- name: Copy source files to temporary clone
+  copy:
+    src: "{{ source_git_repo }}/"
+    dest: "{{ local_source_clone }}/"
+    owner: "{{ ansible_user_name }}"
+    group: "{{ ansible_user_name }}"
+    mode: '0755'
+    remote_src: yes
 
-- name: Clone destination repo
+- name: Clone destination Git repo to temporary directory
   git:
     repo: "{{ destination_git_repo }}"
     dest: "{{ local_dest_clone }}"
     version: main
     force: yes
-    update: yes   # pulls latest changes
+    update: yes
 
-- name: Copy files from source to destination
+- name: Copy files from source temp to destination temp
   copy:
-    src: "{{ local_source_clone }}/subject/"
-    dest: "{{ local_dest_clone }}/subject/"
+    src: "{{ local_source_clone }}/"
+    dest: "{{ local_dest_clone }}/"
     owner: "{{ ansible_user_name }}"
     group: "{{ ansible_user_name }}"
     mode: '0755'
@@ -39,9 +40,54 @@
   args:
     chdir: "{{ local_dest_clone }}"
   register: git_commit
-  ignore_errors: yes   # in case no changes to commit
+  ignore_errors: yes
 
-- name: Push changes to destination repo
+
+- name: Ensure temporary clone directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ local_source_clone }}"
+    - "{{ local_dest_clone }}"
+
+- name: Copy source files to temporary clone
+  copy:
+    src: "{{ source_git_repo }}/"
+    dest: "{{ local_source_clone }}/"
+    owner: "{{ ansible_user_name }}"
+    group: "{{ ansible_user_name }}"
+    mode: '0755'
+    remote_src: yes
+
+- name: Clone destination Git repo to temporary directory
+  git:
+    repo: "{{ destination_git_repo }}"
+    dest: "{{ local_dest_clone }}"
+    version: main
+    force: yes
+    update: yes
+
+- name: Copy files from source temp to destination temp
+  copy:
+    src: "{{ local_source_clone }}/"
+    dest: "{{ local_dest_clone }}/"
+    owner: "{{ ansible_user_name }}"
+    group: "{{ ansible_user_name }}"
+    mode: '0755'
+    remote_src: yes
+
+- name: Commit changes to destination repo
+  command: >
+    git add .
+    && git commit -m "{{ commit_message }}"
+  args:
+    chdir: "{{ local_dest_clone }}"
+  register: git_commit
+  ignore_errors: yes
+
+- name: Push changes to remote Git repo
   command: git push origin main
   args:
     chdir: "{{ local_dest_clone }}"
