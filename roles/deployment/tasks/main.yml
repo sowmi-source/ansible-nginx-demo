@@ -9,54 +9,9 @@
 
 - name: Copy source files to temporary clone
   copy:
-    src: "{{ source_git_repo }}/"
+    src: "{{ source_git_repo }}/"    # must be relative to project root
     dest: "{{ local_source_clone }}/"
-    owner: "scrunchworks"
-    group: "scrunchworks"
-    mode: '0755'
-    remote_src: yes
-
-- name: Clone destination Git repo to temporary directory
-  git:
-    repo: "{{ destination_git_repo }}"
-    dest: "{{ local_dest_clone }}"
-    version: main
-    force: yes
-    update: yes
-
-- name: Copy files from source temp to destination temp
-  copy:
-    src: "{{ local_source_clone }}/"
-    dest: "{{ local_dest_clone }}/"
-    owner: "scrunchworks"
-    group: "scrunchworks"
-    mode: '0755'
-    remote_src: yes
-
-- name: Commit changes to destination repo
-  command: >
-    git add .
-    && git commit -m "{{ commit_message }}"
-  args:
-    chdir: "{{ local_dest_clone }}"
-  register: git_commit
-  ignore_errors: yes
-
-
-- name: Ensure temporary clone directories exist
-  file:
-    path: "{{ item }}"
-    state: directory
-    mode: '0755'
-  loop:
-    - "{{ local_source_clone }}"
-    - "{{ local_dest_clone }}"
-
-- name: Copy source files to temporary clone
-  copy:
-    src: "{{ source_git_repo }}/"
-    dest: "{{ local_source_clone }}/"
-    owner: "scrunchworks"
+    owner: "{{ ansible_user_id }}"
     group: "scrunchworks"
     mode: '0755'
     remote_src: yes
