@@ -1,0 +1,48 @@
+
+- name: Ensure local clone directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ local_source_clone }}"
+    - "{{ local_dest_clone }}"
+
+- name: Clone source repo
+  git:
+    repo: "{{ source_git_repo }}"
+    dest: "{{ local_source_clone }}"
+    version: main
+    force: yes
+
+- name: Clone destination repo
+  git:
+    repo: "{{ destination_git_repo }}"
+    dest: "{{ local_dest_clone }}"
+    version: main
+    force: yes
+    update: yes   # pulls latest changes
+
+- name: Copy files from source to destination
+  copy:
+    src: "{{ local_source_clone }}/subject/"
+    dest: "{{ local_dest_clone }}/subject/"
+    owner: "{{ ansible_user_name }}"
+    group: "{{ ansible_user_name }}"
+    mode: '0755'
+    remote_src: yes
+
+- name: Commit changes to destination repo
+  command: >
+    git add .
+    && git commit -m "{{ commit_message }}"
+  args:
+    chdir: "{{ local_dest_clone }}"
+  register: git_commit
+  ignore_errors: yes   # in case no changes to commit
+
+- name: Push changes to destination repo
+  command: git push origin main
+  args:
+    chdir: "{{ local_dest_clone }}"
+  when: git_commit is succeeded
