@@ -11,8 +11,8 @@
   copy:
     src: "{{ source_git_repo }}/"
     dest: "{{ local_source_clone }}/"
-    owner: "{{ ansible_user_name }}"
-    group: "{{ ansible_user_name }}"
+    owner: "scrunchworks"
+    group: "scrunchworks"
     mode: '0755'
     remote_src: yes
 
@@ -28,8 +28,8 @@
   copy:
     src: "{{ local_source_clone }}/"
     dest: "{{ local_dest_clone }}/"
-    owner: "{{ ansible_user_name }}"
-    group: "{{ ansible_user_name }}"
+    owner: "scrunchworks"
+    group: "scrunchworks"
     mode: '0755'
     remote_src: yes
 
@@ -56,8 +56,8 @@
   copy:
     src: "{{ source_git_repo }}/"
     dest: "{{ local_source_clone }}/"
-    owner: "{{ ansible_user_name }}"
-    group: "{{ ansible_user_name }}"
+    owner: "scrunchworks"
+    group: "scrunchworks"
     mode: '0755'
     remote_src: yes
 
@@ -73,8 +73,8 @@
   copy:
     src: "{{ local_source_clone }}/"
     dest: "{{ local_dest_clone }}/"
-    owner: "{{ ansible_user_name }}"
-    group: "{{ ansible_user_name }}"
+    owner: "scrunchworks"
+    group: "scrunchworks"
     mode: '0755'
     remote_src: yes
 
