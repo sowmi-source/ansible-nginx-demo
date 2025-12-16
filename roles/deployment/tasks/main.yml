@@ -9,9 +9,9 @@
 
 - name: Copy source files to temporary clone
   copy:
-    src: "{{ source_git_repo }}/"    # must be relative to project root
+    src: "https://github.com/sowmi-source/Newfile.git"
     dest: "{{ local_source_clone }}/"
-    owner: "{{ ansible_user_id }}"
+    owner: "scrunchworks"
     group: "scrunchworks"
     mode: '0755'
     remote_src: yes
