@@ -1,5 +1,5 @@
 
-  - name: Build Java App using Role
+- name: Build Java App using Role
   hosts: all
   become: yes
 
