@@ -1,6 +1,7 @@
-- name: Build Java App using Role
-  hosts: all
-  become: yes
-
+- name: Build Java App inside AWX container
+  hosts: localhost
+  connection: local
+  become: no
   roles:
     - deployment
+
