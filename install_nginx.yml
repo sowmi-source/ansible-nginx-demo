@@ -1,41 +1,27 @@
----
-- name: Install and start Nginx
-  hosts: webserver
+- name: Install Nginx on Remote System
+  hosts: all
   become: yes
 
   tasks:
-    - name: Install Nginx (Ubuntu/Debian)
+    - name: Update package list
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install Nginx on Debian/Ubuntu
       apt:
         name: nginx
         state: present
       when: ansible_os_family == "Debian"
-      notify: restart nginx
-      tags: install
 
-    - name: Install Nginx (RHEL/Amazon Linux)
+    - name: Install Nginx on RedHat/CentOS
       yum:
         name: nginx
         state: present
       when: ansible_os_family == "RedHat"
-      notify: restart nginx
-      tags: install
 
-    - name: Start Nginx service
+    - name: Ensure nginx is started and enabled
       service:
         name: nginx
         state: started
         enabled: yes
-      tags: start
-
- 
-    - name: Stop nginx service
-      service:
-        name: nginx
-        state: stopped
-      tags: stop
-
-  handlers:
-    - name: restart nginx
-      service:
-        name: nginx
-        state: restarted
